@@ -1,3 +1,4 @@
+
 public class DimensionNumber implements Comparable<DimensionNumber> {
     private double number;
     private String dimension;
@@ -10,47 +11,72 @@ public class DimensionNumber implements Comparable<DimensionNumber> {
     public DimensionNumber(String string) {
         String[] input = string.split(" ");
         this.number = Double.valueOf(input[0]);
-        this.dimension =input[1];
+        this.dimension = input[1];
     }
 
     public double getNumber() {
         return number;
     }
 
-    public String getDimension(){
+    public String getDimension() {
         return dimension;
     }
 
     public DimensionNumber sum(DimensionNumber other) {
-        if (!this.dimension.equals(other.dimension))
-            throw new IllegalArgumentException("Размерности не совпадают");
-        return new DimensionNumber(this.number + other.number, this.dimension);
+
+        Dimension dimension = new Dimension();
+        if (this.dimension.equals(other.dimension)) {
+            return new DimensionNumber(this.number + other.number, this.dimension);
+        } else {
+            return new DimensionNumber(this.number +
+                    dimension.isCompatible(other.number, other.dimension, this.dimension), this.dimension);
+        }
     }
 
     public DimensionNumber subtract(DimensionNumber other) {
-        if (!this.dimension.equals(other.dimension))
-            throw new IllegalArgumentException("Размерности не совпадают");
-        return new DimensionNumber(this.number - other.number, this.dimension);
+
+        Dimension dimension = new Dimension();
+        if (this.dimension.equals(other.dimension)) {
+            return new DimensionNumber(this.number - other.number, this.dimension);
+        } else {
+            return new DimensionNumber(this.number -
+                    dimension.isCompatible(other.number, other.dimension, this.dimension), this.dimension);
+        }
     }
 
-    public DimensionNumber multiply(double factor) {
-        return new DimensionNumber(this.number * factor, this.dimension);
+    public DimensionNumber multiply(DimensionNumber other) {
+        Dimension dimension = new Dimension();
+        if (this.dimension.equals(other.dimension)) {
+            return new DimensionNumber(this.number * other.number, this.dimension);
+        } else {
+            return new DimensionNumber(this.number *
+                    dimension.isCompatible(other.number, other.dimension, this.dimension), this.dimension);
+        }
     }
 
-    public DimensionNumber divide(double divisor) {
-        return new DimensionNumber(this.number / divisor, this.dimension);
-    }
+    public DimensionNumber divide(DimensionNumber other) {
 
-    public DimensionNumber divideWithDim(DimensionNumber other) {
-        if (!this.dimension.equals(other.dimension))
-            throw new IllegalArgumentException("Размерности не совпадают");
-        return new DimensionNumber(this.number / other.number, this.dimension);
+        Dimension dimension = new Dimension();
+
+        if (this.dimension.equals(other.dimension)) {
+            return new DimensionNumber(this.number / other.number, this.dimension);
+        } else {
+            return new DimensionNumber(this.number /
+                    dimension.isCompatible(other.number, other.dimension, this.dimension), this.dimension);
+        }
     }
 
     public int compareTo(DimensionNumber other) {
-        if (!this.dimension.equals(other.dimension))
-            throw new IllegalArgumentException("Размерности не совпадают");
-        return Double.compare(this.number, other.number);
+        Dimension dimension = new Dimension();
+        if (this.number - dimension.isCompatible(other.number, other.dimension, this.dimension) == 0) {
+            return 0;
+        }
+        else if (this.number - dimension.isCompatible(other.number, other.dimension, this.dimension) > 0) {
+            return 1;
+        }
+        else {
+            return -1;
+        }
     }
 
     @Override
@@ -73,6 +99,6 @@ public class DimensionNumber implements Comparable<DimensionNumber> {
         } else if (!dimension.equals(other.dimension))
             return false;
         return true;
-
     }
 }
+
